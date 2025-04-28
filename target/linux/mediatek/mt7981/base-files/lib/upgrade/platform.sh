@@ -218,6 +218,7 @@ platform_do_upgrade() {
 		nand_do_upgrade "$1"
 		;;
 	Airpi |\
+ 	hc,cpe |\
 	huasifei,wh3000-emmc |\
 	cmcc,rax3000m-emmc |\
 	cmcc,xr30-emmc |\
@@ -278,6 +279,7 @@ platform_check_image() {
 	nradio,wt9103 |\
 	*nokia,ea0326gmp* |\
 	Airpi |\
+ 	hc,cpe |\
 	*snand* |\
 	*emmc*)
 		# tar magic `ustar`
