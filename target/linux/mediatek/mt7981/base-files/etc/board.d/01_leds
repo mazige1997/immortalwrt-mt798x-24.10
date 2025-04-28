@@ -65,6 +65,15 @@ nradio,wt9103)
 *newland,nl-wr9103*)
         ucidef_set_led_netdev "green" "GREEN" "green:status" "wan" "link"
 	;;
+hc,cpe)
+        ucidef_set_led_timer  "wdg" "wdg" "wdg" 1000 1000
+        ucidef_set_led_netdev "wlan2g" "WLAN2G" "2gwifi" "ra0"
+        ucidef_set_led_netdev "wlan5g" "WLAN5G" "5gwifi" "rax0"
+        ucidef_set_led_timer "system" "system" "system" 333 333
+        ucidef_set_led_netdev "wan" "wan" "net" "eth1"
+        ucidef_set_led_netdev "gpy" "wan" "wan" "eth1"
+        ucidef_set_led_netdev "wwan" "wwan" "wwan" "wwan0"
+        ;;
 esac
 
 board_config_flush
