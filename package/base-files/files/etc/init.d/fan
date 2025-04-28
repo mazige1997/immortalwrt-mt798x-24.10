@@ -1,0 +1,48 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=01
+
+start() {
+    # 定义温度文件路径
+    temp_file="/sys/devices/virtual/thermal/thermal_zone0/temp"
+    # 定义风扇控制文件路径
+    fan_control_file="/sys/devices/virtual/thermal/cooling_device0/cur_state"
+    # 设置启动风扇的温度阈值（摄氏度）
+    start_temp=65000  # 65 degrees in millidegrees
+    # 设置停止风扇的温度阈值（摄氏度）
+    stop_temp=59500   # 59.5 degrees in millidegrees
+
+    # 创建后台进程来监控温度和控制风扇
+    (
+        while true; do
+            # 读取当前CPU温度（以毫度为单位）
+            current_temp=$(cat $temp_file)
+
+            # 检查并设置风扇状态
+            if [ "$current_temp" -ge "$start_temp" ]; then
+                # 如果温度达到或超过启动阈值，则开启风扇
+                echo 1 > $fan_control_file
+            elif [ "$current_temp" -le "$stop_temp" ]; then
+                # 如果温度降到停止阈值以下，则关闭风扇
+                echo 0 > $fan_control_file
+            fi
+
+            # 等待一段时间再检查，避免过于频繁的检查
+            sleep 1s
+        done
+    ) &
+    # 记录PID到文件，以便可以管理这个进程
+    echo $! > /var/run/fan.pid
+}
+
+stop() {
+    # 停止风扇控制进程
+    kill -9 $(cat /var/run/fan.pid)
+    rm -f /var/run/fan.pid
+}
+
+restart() {
+    stop
+    start
+}
